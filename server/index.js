@@ -1,7 +1,6 @@
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
-dotenv.config();
 import cookieParser from "cookie-parser";
 import morgan from "morgan";
 import helmet from "helmet";
@@ -9,40 +8,42 @@ import connectDB from "./config/connectDB.js";
 import userRouter from "./route/user.route.js";
 import categoryRouter from "./route/category.route.js";
 
+dotenv.config();
+
 const app = express();
 
-// ✅ CORS FIX
+// ✅ CORS (safe for prod)
 app.use(cors({
-  origin: process.env.FRONTEND_URL, // NO trailing slash
+  origin: true, // allow vercel + preview + prod
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
 }));
 
-// ✅ Preflight fix (VERY IMPORTANT for Vercel)
+// ✅ Handle preflight
 app.options("*", cors());
 
 app.use(express.json());
 app.use(cookieParser());
 app.use(morgan("dev"));
-app.use(helmet({
-  crossOriginResourcePolicy: false
-}));
+app.use(helmet({ crossOriginResourcePolicy: false }));
 
-// ✅ Correct PORT logic
-const PORT = process.env.PORT || 8000;
+// ✅ DB connection (only once)
+let isConnected = false;
+app.use(async (req, res, next) => {
+  if (!isConnected) {
+    await connectDB();
+    isConnected = true;
+  }
+  next();
+});
 
 app.get("/", (req, res) => {
-  res.json({
-    message: "Server is running " + PORT
-  });
+  res.json({ message: "Server is running" });
 });
 
 app.use("/api/user", userRouter);
 app.use("/api/category", categoryRouter);
 
-connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log("Server is running", PORT);
-  });
-});
+// ✅ EXPORT — DO NOT LISTEN
+export default app;
