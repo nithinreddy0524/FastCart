@@ -13,7 +13,7 @@ const app = express();
 
 // ✅ CORS FIX
 app.use(cors({
-  origin: "https://fast-cart-frontend.vercel.app" || process.env.FRONTEND_URL, // NO trailing slash
+  origin: "https://fast-cart-frontend.vercel.app", // NO trailing slash
   credentials: true,
   methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
   allowedHeaders: ["Content-Type", "Authorization"]
