@@ -1,0 +1,75 @@
+import { createBrowserRouter } from "react-router-dom";
+import App from "../App";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Register from "../pages/Register";
+import ForgotPassword from "../pages/ForgotPassword";
+import OtpVerification from "../pages/OtpVerification";
+import ResetPassword from "../pages/ResetPassword";
+import UserMenuMobile from "../pages/UserMenuMobile";
+import Dashboard from "../layouts/Dashboard";
+import Profile from "../pages/Profile";
+import Categories from "../pages/Categories";
+import CreateCategory from "../pages/CreateCategory";
+import CategoryDetail from "../pages/CategoryDetail";
+
+const router = createBrowserRouter([
+    {
+        path : "/",
+        element : <App/>,
+        children : [
+            {
+                path : "",
+                element : <Home/>
+            },
+            {
+                path : 'login',
+                element : <Login/>
+            },
+            {
+                path : "register",
+                element : <Register/>
+            },
+            {
+                path : "forgot-password",
+                element : <ForgotPassword/>
+            },
+            {
+                path : "verification-otp",
+                element : <OtpVerification/>
+            },
+            {
+                path : "reset-password",
+                element : <ResetPassword/>
+            },
+            {
+                path : "user",
+                element : <UserMenuMobile/>
+            },
+            {
+                path : "dashboard",
+                element : <Dashboard/>,
+                children : [
+                    {
+                        path : "profile",
+                        element : <Profile/>
+                    },
+                    {
+                        path: "categories",
+                        element: <Categories />
+                    }
+                    ,{
+                        path: "categories/:id",
+                        element: <CategoryDetail />
+                    }
+                    ,{
+                        path: "categories/create",
+                        element: <CreateCategory />
+                    }
+                ]
+            }
+        ]
+    }
+])
+
+export default router
